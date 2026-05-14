@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cricket Game</title>
+    <link rel="stylesheet" href="cricket.css">
+   
+</head>
+<body>
+    <h1>Bat Ball Stump Game</h1>
+    <button id="batButton"
+    onclick="
+    choiceGenerator();    
+    console.log(computerChoice);
+    throwAlert('Bat');
+    throwResult(computerChoice,1);
+    "> </button>
+
+    <button id="ballButton"
+    onclick="
+    choiceGenerator();
+    console.log(computerChoice);
+    throwAlert('Ball');
+    throwResult(computerChoice,2);
+
+    "> </button>
+
+    <button id="stumpButton"
+    onclick="
+    choiceGenerator();
+    console.log(computerChoice);
+    throwAlert('Stump');
+    throwResult(computerChoice,3);
+    "> </button>
+
+
+<h3 id="computer-choice"></h3>
+<h3 id="user-choice"></h3>
+<h3 id="result"></h3>
+<h3 id="score"></h3>
+
+<button id="resetButton" onclick="localStorage.clear(); finalCall();"> </button>
+    
+    <script>
+    let computerChoice;
+    let scoreStr = localStorage.getItem('score');
+    let score;
+
+    function finalCall(){
+      document.querySelector('#computer-choice').innerText = '';
+      document.querySelector('#user-choice').innerText = '';
+      document.querySelector('#result').innerText = '';
+      document.querySelector('#score').className = '';
+      document.querySelector('#result').className = '';
+      resetScore();
+      updateScore();
+      document.querySelector('#score').innerHTML = score.displayScore();
+    //   document.querySelector('#score').innerText = 'Wins: 0 Losses: 0 Ties: 0';
+    }
+
+    resetScore(scoreStr);
+    function resetScore(scoreStr){
+    score = scoreStr ?  JSON.parse(scoreStr) : {
+        win:0,
+        lose:0,
+        tie:0,
+    };
+        score.displayScore = function(){
+                return `
+                    <span class="score-win">Wins: ${score.win}</span>
+                    <span class="score-lose">Losses: ${score.lose}</span>
+                    <span class="score-tie">Ties: ${score.tie}</span>`;
+            }
+                return score;
+            // throwResult();
+     };
+    
+
+
+    // score = JSON.parse(localStorage.getItem('score')) || score;
+    
+    function choiceGenerator(){
+        computerChoice = Math.ceil(Math.random() * 3);    
+    //1 for Bat, 2 for Ball, 3 for Stump
+    //1>2>3<1
+    }
+
+    function name(){
+    if(computerChoice === 1){
+        return 'Bat';
+    } else if(computerChoice === 2){
+        return 'Ball';
+    } else {
+        return 'Stump';
+    }
+    }
+
+    function throwAlert(UserChoice){
+        document.querySelector('#computer-choice').innerText = `Computer choice is: ${name()}`;
+        document.querySelector('#user-choice').innerText = `Your choice is: ${UserChoice}`;
+    //     alert(`Computer choice: ${name()} You chose: ${UserChoice}
+    // `);
+    }
+
+
+
+    function throwResult(computerChoice, userChoice){
+         //1 for Bat, 2 for Ball, 3 for Stump
+         //1>2>3<1    Winning conditions: winner>loser(1>2>3<1)
+        if(computerChoice === userChoice){  
+            score.tie++;
+            document.querySelector('#result').className = 'tie';
+            document.querySelector('#score').className = 'tie';
+            document.querySelector('#result').innerText = `It's a Tie!`;
+            document.querySelector('#score').innerHTML = score.displayScore();
+        //  alert(`That's a Tie! 
+        //   ${score.displayScore()}`);
+        } else if(computerChoice === 3 && userChoice === 1){
+            score.lose++;
+            document.querySelector('#result').className = 'lose';
+            document.querySelector('#score').className = 'lose';
+            document.querySelector('#result').innerText = `You Lost!`;  
+            document.querySelector('#score').innerHTML = score.displayScore();
+
+            // alert(`You Lost!
+            // ${  score.displayScore()}`);
+        }
+    
+        else if(computerChoice === 1 && userChoice === 3){
+            score.win++;
+            document.querySelector('#result').className = 'win';
+            document.querySelector('#score').className = 'win';
+            document.querySelector('#result').innerText = `You Won!`;
+            document.querySelector('#score').innerHTML = score.displayScore();
+            // alert(`You Won!
+            // ${score.displayScore()}`);
+        }
+        else if(computerChoice > userChoice){
+            score.win++;    
+            document.querySelector('#result').className = 'win';
+            document.querySelector('#score').className = 'win';
+            document.querySelector('#result').innerText = `You Won!`;
+            document.querySelector('#score').innerHTML = score.displayScore();  
+            // alert(`You Won!
+            // ${score.displayScore()}`);
+        } else {
+            score.lose++;
+            document.querySelector('#result').className = 'lose';
+            document.querySelector('#score').className = 'lose';
+            document.querySelector('#result').innerText = `You Lost!`;
+            document.querySelector('#score').innerHTML = score.displayScore();
+
+            // alert(`You Lost!
+            // ${score.displayScore()}`);
+        }
+
+
+        
+        updateScore();
+
+        console.log(score);
+        console.log(JSON.parse(localStorage.getItem('score')));
+    }
+    
+    function updateScore(){
+        localStorage.setItem('score', JSON.stringify(score));
+    }
+    
+
+
+    </script>
+</body>
+</html>
